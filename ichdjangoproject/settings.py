@@ -33,13 +33,14 @@ ALLOWED_HOSTS = env.list('ALLOWED_HOSTS')
 # Application definition
 
 INSTALLED_APPS = [
-    'myfirstapp.apps.MyfirstappConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    'task_manager.apps.TaskManagerConfig',
 ]
 
 MIDDLEWARE = [
