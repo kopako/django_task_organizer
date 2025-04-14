@@ -16,13 +16,13 @@ class Category(models.Model):
 
 
 class Task(models.Model):
-    STATUS_CHOICES = [
-        ('New', 'New'),
-        ('In progress', 'In progress'),
-        ('Pending', 'Pending'),
-        ('Blocked', 'Blocked'),
-        ('Done', 'Done'),
-    ]
+    STATUS_CHOICES = {
+        'New':'New',
+        'In progress':'In progress',
+        'Pending':'Pending',
+        'Blocked':'Blocked',
+        'Done':'Done',
+    }
     title = models.CharField(max_length=250,unique_for_year="created_at")
     description = models.TextField(null=True, blank=True)
     categories = models.ManyToManyField(Category)
@@ -53,10 +53,11 @@ class SubTask(models.Model):
     status = models.CharField(max_length=30, choices=STATUS_CHOICES)
     deadline = models.DateTimeField()
     created_at = models.DateTimeField(auto_now_add=True, editable=False)
-    main_task = models.ForeignKey( # Main task, M2O
+    main_task = models.ForeignKey(
         Task,
         on_delete=models.CASCADE,
         null=False,
+        related_name='sub_task',
     )
     def __str__(self):
         return self.title
