@@ -1,11 +1,20 @@
-from django.urls import path
+from django.urls import include, path
+from rest_framework import routers
 
 from . import views
 
 app_name = "task_manager"
+
+router = routers.DefaultRouter()
+router.register(r'tasks', views.TaskViewSet)
+router.register(r'subtasks', views.SubTaskViewSet)
+router.register(r'categories', views.CategoryViewSet)
+
+
 urlpatterns = [
-    path("", views.index, name="index"),
-    path("<int:id>/", views.detail, name="detail"),
-    # path("<int:question_id>/results/", views.results, name="results"),
-    # path("<int:question_id>/vote/", views.vote, name="vote"),
+    path('', include(router.urls)),
+    path('tasks_by_category/', views.category_task_quantity),
+    path('tasks_count/', views.task_quantity),
+    path('tasks_expired/', views.task_expired),
+    
 ]

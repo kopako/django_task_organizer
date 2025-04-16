@@ -1,5 +1,7 @@
 from django.db import models
+import logging
 
+logger = logging.getLogger(__name__)
 # Create your models here.
 class Category(models.Model):
     name = models.CharField(max_length=30)
@@ -38,6 +40,7 @@ class Task(models.Model):
         verbose_name_plural = "Tasks"
         ordering = ("-created_at",)
         unique_together = ("title",)
+        default_related_name = "task"
 
 class SubTask(models.Model):
     STATUS_CHOICES = [
