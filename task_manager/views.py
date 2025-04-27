@@ -1,6 +1,6 @@
 from django.utils import timezone
 
-from rest_framework import viewsets
+from rest_framework import viewsets, status
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from django.db.models import Sum, Count
@@ -9,17 +9,30 @@ from django.db.models import Sum, Count
 from task_manager.models import *
 from task_manager.serializers import *
 
-class CategoryViewSet(viewsets.ModelViewSet):
-    queryset = Category.objects.all()
-    serializer_class = CategorySerializer
+@api_view(['POST'])
+def create_task(request):
+    serializer = TaskSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    else:
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class TaskViewSet(viewsets.ModelViewSet):
-    queryset = Task.objects.all()
-    serializer_class = TaskSerializer
+@api_view(['GET'])
+def read_tasks(request):
+    tasks = Task.objects.all()
+    serializer = TaskSerializer(tasks, many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)
 
-class SubTaskViewSet(viewsets.ModelViewSet):
-    queryset = SubTask.objects.all()
-    serializer_class = SubTaskSerializer
+@api_view(['GET'])
+def task_detail(request, pk):
+    try:
+        task = Task.objects.get(pk=pk)
+    except Task.DoesNotExist:
+        return Response({'error': 'Book not found'},
+                status=status.HTTP_404_NOT_FOUND)
+    serializer = TaskSerializer(task)
+    return Response(serializer.data, status=status.HTTP_200_OK)
 
 @api_view(['GET'])
 def category_task_quantity(request):
