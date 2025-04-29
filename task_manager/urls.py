@@ -1,18 +1,20 @@
-from django.urls import include, path
-from rest_framework import routers
+from django.urls import path
 
-from . import views
+from .views.category import category_task_quantity
+from .views.subtask import SubTaskListCreateView, SubTaskDetailUpdateDeleteView
+from .views.task import create_task, read_tasks, task_detail, task_quantity, task_expired
 
 app_name = "task_manager"
 
 
 urlpatterns = [
-    path('tasks/create/', views.create_task),
-    path('tasks/', views.read_tasks),
-    path('tasks/<int:pk>/', views.task_detail),
-    path('tasks_by_category/', views.category_task_quantity),
-    path('tasks_count/', views.task_quantity),
-    path('tasks_expired/', views.task_expired),
-
+    path('tasks/create/', create_task),
+    path('tasks/', read_tasks),
+    path('tasks/<int:pk>/', task_detail),
+    path('tasks_by_category/', category_task_quantity),
+    path('tasks_count/', task_quantity),
+    path('tasks_expired/', task_expired),
+    path('subtasks/', SubTaskListCreateView.as_view()),
+    path('subtasks/<int:pk>/', SubTaskDetailUpdateDeleteView.as_view()),
 ]
 

@@ -1,6 +1,9 @@
 from django.contrib import admin
 
-from task_manager.models import (Task, SubTask, Category)
+from task_manager.models.category import Category
+from task_manager.models.subtask import SubTask
+from task_manager.models.task import Task
+
 
 class SubTaskInline(admin.StackedInline):
     model = SubTask
