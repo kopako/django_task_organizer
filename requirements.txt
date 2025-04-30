@@ -5,3 +5,4 @@ mysqlclient==2.2.7
 sqlparse==0.5.3
 
 djangorestframework~=3.16.0
+django-filter
