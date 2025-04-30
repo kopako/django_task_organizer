@@ -4,11 +4,18 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 from task_manager.models.category import Category
+from task_manager.pagination import CustomCursorPagination
 from task_manager.serializers.category import CategorySerializer
+
+
+class CategoryCursorPagination(CustomCursorPagination):
+    ordering = 'name'
+
 
 class CategoryViewSet(ModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
+    pagination_class = CategoryCursorPagination
 
     @action(detail=False, methods=['get'])
     def count_tasks(self, request):
