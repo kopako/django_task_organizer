@@ -1,6 +1,7 @@
 from django.utils import timezone
 from rest_framework import status
 from rest_framework.decorators import api_view
+from rest_framework.request import Request
 from rest_framework.response import Response
 
 from task_manager.models.task import Task
@@ -18,8 +19,11 @@ def create_task(request):
 
 
 @api_view(['GET'])
-def read_tasks(request):
+def read_tasks(request: Request):
     tasks = Task.objects.all()
+    week_day = request.query_params.get('week_day')
+    if week_day:
+        tasks = tasks.filter(deadline__week_day=week_day)
     serializer = TaskSerializer(tasks, many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
 
