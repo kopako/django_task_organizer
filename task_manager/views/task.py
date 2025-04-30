@@ -1,42 +1,25 @@
 from django.utils import timezone
-from rest_framework import status
+from rest_framework import filters
 from rest_framework.decorators import api_view
-from rest_framework.request import Request
+from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.response import Response
+from django_filters.rest_framework import DjangoFilterBackend
 
 from task_manager.models.task import Task
 from task_manager.serializers.task import TaskSerializer
 
 
-@api_view(['POST'])
-def create_task(request):
-    serializer = TaskSerializer(data=request.data)
-    if serializer.is_valid():
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
-    else:
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+class TaskListCreateAPIView(ListCreateAPIView):
+    serializer_class = TaskSerializer
+    queryset = Task.objects.all()
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    filterset_fields = ['status', 'deadline']
+    search_fields = ['title', 'description']
+    ordering_fields = ['created_at']
 
-
-@api_view(['GET'])
-def read_tasks(request: Request):
-    tasks = Task.objects.all()
-    week_day = request.query_params.get('week_day')
-    if week_day:
-        tasks = tasks.filter(deadline__week_day=week_day)
-    serializer = TaskSerializer(tasks, many=True)
-    return Response(serializer.data, status=status.HTTP_200_OK)
-
-
-@api_view(['GET'])
-def task_detail(request, pk):
-    try:
-        task = Task.objects.get(pk=pk)
-    except Task.DoesNotExist:
-        return Response({'error': 'Book not found'},
-                        status=status.HTTP_404_NOT_FOUND)
-    serializer = TaskSerializer(task)
-    return Response(serializer.data, status=status.HTTP_200_OK)
+class TaskRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView):
+    serializer_class = TaskSerializer
+    queryset = Task.objects.all()
 
 @api_view(['GET'])
 def task_quantity(request):

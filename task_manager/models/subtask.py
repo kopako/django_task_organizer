@@ -17,7 +17,7 @@ class SubTask(models.Model):
     categories = models.ManyToManyField(Category)
     status = models.CharField(max_length=30, choices=STATUS_CHOICES)
     deadline = models.DateTimeField()
-    created_at = models.DateTimeField(auto_now_add=True, editable=False)
+    created_at = models.DateTimeField(auto_now_add=True)
     main_task = models.ForeignKey(
         Task,
         on_delete=models.CASCADE,
