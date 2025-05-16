@@ -1,5 +1,6 @@
 from django.db.models import Count
-from rest_framework.decorators import api_view, action
+from rest_framework.decorators import action
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
@@ -16,6 +17,7 @@ class CategoryViewSet(ModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
     pagination_class = CategoryCursorPagination
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
     @action(detail=False, methods=['get'])
     def count_tasks(self, request):
