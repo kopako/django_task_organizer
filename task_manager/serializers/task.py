@@ -18,6 +18,7 @@ class TaskSerializer(serializers.ModelSerializer):
             'deadline',
             'created_at'
         ]
+        read_only_fields = ['owner','created_at']
 
 class TaskDetailSerializer(serializers.ModelSerializer):
     subtasks = SubTaskSerializer()

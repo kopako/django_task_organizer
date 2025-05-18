@@ -1,3 +1,4 @@
+from django import contrib
 from django.utils import timezone
 from rest_framework import filters
 from rest_framework.decorators import api_view, permission_classes
@@ -7,22 +8,33 @@ from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
 
 from task_manager.models.task import Task
+from task_manager.permissions import IsOwnerOrReadOnly
 from task_manager.serializers.task import TaskSerializer
 
 
 class TaskListCreateAPIView(ListCreateAPIView):
     serializer_class = TaskSerializer
-    queryset = Task.objects.all()
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     filterset_fields = ['status', 'deadline']
     search_fields = ['title', 'description']
     ordering_fields = ['created_at']
     permission_classes = [IsAuthenticatedOrReadOnly]
 
+    def get_queryset(self):
+        user = self.request.user
+        if isinstance(user, contrib.auth.models.AnonymousUser):
+            return Task.objects.none()
+        else:
+            return Task.objects.filter(owner=user)
+
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
+
+
 class TaskRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView):
     serializer_class = TaskSerializer
     queryset = Task.objects.all()
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [IsOwnerOrReadOnly, IsAuthenticatedOrReadOnly]
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticatedOrReadOnly])

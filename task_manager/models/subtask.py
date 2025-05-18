@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from django.db import models
 
 from task_manager.models.category import Category
@@ -18,6 +19,12 @@ class SubTask(models.Model):
     status = models.CharField(max_length=30, choices=STATUS_CHOICES)
     deadline = models.DateTimeField()
     created_at = models.DateTimeField(auto_now_add=True)
+    owner = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
+    )
     main_task = models.ForeignKey(
         Task,
         on_delete=models.CASCADE,
