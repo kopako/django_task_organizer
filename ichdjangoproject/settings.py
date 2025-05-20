@@ -63,6 +63,14 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'ichdjangoproject.urls'
 
+DEFAULT_FROM_EMAIL = 'Task Manager <no-reply@yourdomain.com>'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = '0.0.0.0'
+EMAIL_PORT = 1025
+# EMAIL_HOST_USER = 'username'
+# EMAIL_HOST_PASSWORD = 'password'
+# EMAIL_USE_TLS = True
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
